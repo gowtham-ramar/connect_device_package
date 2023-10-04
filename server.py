@@ -126,7 +126,7 @@ if __name__ == '__main__':
     
         message_string = cmdData.input_message
         random.seed(10)
-        message_topic="test/#"
+        message_topic="aws/#"
         print(message_topic)
         message_count=1000
         # Subscribe
@@ -150,13 +150,13 @@ if __name__ == '__main__':
 
         publish_count = 1
         while True:
-            # message = "{} [{}]".format(message_string, publish_count)
-            # print("Publishing message to topic '{}': {}".format(message_topic, message))
-            # message_json = json.dumps(message)
-            # mqtt_connection.publish(
-            #     topic=message_topic,
-            #     payload=message_json,
-            #     qos=mqtt.QoS.AT_LEAST_ONCE)
+            message = "{} [{}]".format(message_string, publish_count)
+            print("Publishing message to topic '{}': {}".format(message_topic, message))
+            message_json = json.dumps(message)
+            mqtt_connection.publish(
+                topic=message_topic,
+                payload=message_json,
+                qos=mqtt.QoS.AT_LEAST_ONCE)
             time.sleep(10)
             publish_count += 1
 
