@@ -53,16 +53,20 @@ def on_resubscribe_complete(resubscribe_future):
 
 # Callback when the subscribed topic receives a message
 def on_message_received(topic, payload, dup, qos, retain, **kwargs):
-    print("Received message from topic '{}': {}".format(topic, payload))
-    print(type(topic),type(payload))
+    
+    # print(type(topic),type(payload))
     json_str = payload.decode('utf-8')
     json_data = json.loads(json_str)
-    message_json = json.dumps({"is_mqtt_hub_broker":True,"message":"Your Data Recevied"})
-    if json_data.get("is_mqtt_hub_broker",None) is None:
-        mqtt_connection.publish(
-        topic=topic,
-        payload=message_json,
-        qos=mqtt.QoS.AT_LEAST_ONCE)    
+    if json_data.get("action_type",None) is None:
+        print("Received message from topic '{}': {}".format(topic, payload))
+    else:
+        print("Published message from topic '{}': {}".format(topic, payload))
+    # message_json = json.dumps({"is_mqtt_hub_broker":True,"message":"Your Data Recevied"})
+    # if json_data.get("is_mqtt_hub_broker",None) is None:
+    #     mqtt_connection.publish(
+    #     topic=topic,
+    #     payload=message_json,
+    #     qos=mqtt.QoS.AT_LEAST_ONCE)    
        
 
     # global received_count
@@ -151,13 +155,14 @@ if __name__ == '__main__':
         publish_count = 1
         while True:
             message = "{} [{}]".format(message_string, publish_count)
-            print("Publishing message to topic '{}': {}".format(message_topic, message))
-            message_json = json.dumps(message)
+            #print("Publishing message to topic '{}': {}".format(message_topic, message))
+            
+            message_json = json.dumps({"device":"AC","action_type":"TEMPERATURE","value":str(random.randint(20, 25))})
             mqtt_connection.publish(
-                topic=message_topic,
-                payload=message_json,
-                qos=mqtt.QoS.AT_LEAST_ONCE)
-            time.sleep(10)
+            topic="aws/987654321",
+            payload=message_json,
+            qos=mqtt.QoS.AT_LEAST_ONCE)    
+            time.sleep(60)
             publish_count += 1
 
         # Wait for all messages to be received.
